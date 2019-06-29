@@ -4,7 +4,11 @@ from numpy import genfromtxt
 import sys
 import csv
 
-fileName = input('Input the name of the file that you want converted into music: ')
+if (len(sys.argv) > 1):
+    fileName = sys.argv[1]
+else:
+    fileName = input('Input the name of the file that you want converted into music: ')
+
 
 # Checks if the file exists 
 def FileCheck(fn):
@@ -23,7 +27,7 @@ def formatFile(fileName):
 
 # This function takes the file and converts it to a numpy array
 def ConvertFile(fileName):
-    fileArray = genfromtxt(str(fileName), delimiter=',')
+    fileArray = genfromtxt(str(fileName), delimiter=',', dtype=None, encoding=None)
     return fileArray
 
 # Run the program only if the file exists
