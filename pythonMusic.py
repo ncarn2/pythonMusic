@@ -1,6 +1,5 @@
 # This file takes a CSV file and converts it into MP3
 
-from numpy import genfromtxt
 from midi2audio import FluidSynth 
 
 from pyknon.genmidi import Midi
@@ -23,8 +22,8 @@ def main():
 
     # Run the program only if the file exists
     if(FileCheck(fileName) == 1):
-        convertedFile = ConvertFile(fileName)
-        CreateMidi(convertedFile, fileName)
+        fileArray = ConvertFile(fileName)
+        CreateMidi(fileArray, fileName)
 
 # Checks if the file exists 
 def FileCheck(fn):
@@ -40,12 +39,25 @@ def formatFile(fileName):
     cleanFile = fileName.clean()
     return cleanFile
 
-# This method takes the file and converts it to a numpy array
+# This method takes the file and converts it to a array
 def ConvertFile(fileName):
-    fileArray = genfromtxt(str(fileName), delimiter=',', dtype=None, encoding=None)
+    fileArray = []
+
+    with open(fileName) as csvFile:
+        csvReader = csv.reader(csvFile)
+
+        #for each row, add each element into the fileArray
+        for row in csvReader:
+            for value in row:
+                fileArray.append(value)
+
+
+    print (fileArray)
+
     return fileArray
 
-# This method takes the numpy array and converts it into a wav file
+# This method takes the array and converts it into a midi file
+# This also converts the data to music notes
 def CreateMidi(fileArray, fileName):
     newFileName = (os.path.splitext(fileName)[0] + ".midi") 
 
@@ -62,17 +74,17 @@ def CreateMidi(fileArray, fileName):
         F_sharp = Note(6), 
         G = Note(7), 
         G_sharp = Note(8), 
-        A = Note(9) 
-        A_sharp = Note(10) 
+        A = Note(9), 
+        A_sharp = Note(10), 
         B = Note(11) 
     )
     
 
 
-    for i in range (0, fileArray.shape):
-        fileArray[i]
-    sequence = NoteSeq([noteDict["C_note"], A_note, quarter_rest, C_note])
-    sequence += [C_note, A_note, A_note, A_note, A_note, A_note]
+    for i in range (0, len(fileArray)):
+        fileArray[i-1]
+
+    sequence = NoteSeq([noteDict["C"], noteDict["D"], quarter_rest, noteDict["E"]])
 
     midi = Midi(1, tempo=120)
     midi.seq_notes(sequence, track=0)
