@@ -4,10 +4,18 @@ from numpy import genfromtxt
 import sys
 import csv
 
-if (len(sys.argv) > 1):
-    fileName = sys.argv[1]
-else:
-    fileName = input('Input the name of the file that you want converted into music: ')
+def main():
+    if (len(sys.argv) > 1):
+        fileName = sys.argv[1]
+    else:
+        fileName = input('Input the name of the file that you want converted into music: ')
+
+    # Run the program only if the file exists
+    if(FileCheck(fileName) == 1):
+        convertedFile = ConvertFile(fileName)
+        print(convertedFile)
+
+    
 
 
 # Checks if the file exists 
@@ -16,7 +24,7 @@ def FileCheck(fn):
         open(fn, "r") 
         return 1
     except IOError:
-        print ("Error: the file", fileName, " does not appear to exist.")
+        print ("Error: the file", fn, " does not appear to exist.")
         return 0
 
 # Formats the csv file in the case of strange formats
@@ -30,7 +38,6 @@ def ConvertFile(fileName):
     fileArray = genfromtxt(str(fileName), delimiter=',', dtype=None, encoding=None)
     return fileArray
 
-# Run the program only if the file exists
-if(FileCheck(fileName) == 1):
-    convertedFile = ConvertFile(fileName)
-    print(convertedFile)
+
+if __name__ == '__main__':
+    main()
