@@ -5,7 +5,7 @@ This program will take any dataset and turn it into "music"
 
 ## Example:
 ```bash
-python musicData.py example.csv
+python pythonMusic.py example.csv
 ```
 
 ## Authors
