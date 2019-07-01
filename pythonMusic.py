@@ -14,6 +14,7 @@ import wave
 import random
 import struct
 import re
+import math
 
 # Dicitonary with all pyknon notes
 noteDict = dict(
@@ -42,6 +43,14 @@ def main():
         fileArray = ConvertFile(fileName)
         CreateMidi(fileArray, fileName)
 
+# Ends the program
+def EndProgram(reason):
+    if(reason == 'string'):
+        print("Failed to convert data, the provided dataset contains strings.")
+    else:
+        print("Conversion Complete.")
+    exit()
+
 # Checks if the file exists 
 def FileCheck(fn):
     try:
@@ -61,6 +70,12 @@ def FormatFile(fileArray):
     # Remove all whitespace
     for i in range (0, len(cleanArray)):
         cleanArray[i] = cleanArray[i].replace(" ", "")
+        try:
+            cleanArray[i] = int(cleanArray[i])
+        except ValueError:
+            # Ends the program with the string error
+            EndProgram('string')
+
 
     return cleanArray 
 
@@ -83,12 +98,15 @@ def ConvertFile(fileName):
 def CreateMidi(fileArray, fileName):
     newFileName = (os.path.splitext(fileName)[0] + ".midi") 
 
+    sequence = NoteSeq([])
+
     quarter_rest = Rest(0.25)
     fileArray = FormatFile(fileArray)
     for i in range (0, len(fileArray)):
-        print("file array[",i,"]", fileArray[i])
+        # Do the log 10 of the 
+        fileArray[i] = float(round(math.log(int(fileArray[i]), 10), 1))
+        print(fileArray[i])
 
-    sequence = NoteSeq([noteDict["C"], noteDict["D"], quarter_rest, noteDict["E"]])
 
     midi = Midi(1, tempo=120)
     midi.seq_notes(sequence, track=0)
