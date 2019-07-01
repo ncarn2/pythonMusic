@@ -1,4 +1,5 @@
-# This file takes a CSV file and converts it into MP3
+# This file takes a CSV file and converts it into WAV
+# Removes all string instances from the dataset
 
 from midi2audio import FluidSynth 
 
@@ -16,21 +17,6 @@ import struct
 import re
 import math
 
-# Dicitonary with all pyknon notes
-noteDict = dict(
-    C = Note(0), 
-    C_sharp = Note(1),
-    D = Note(2), 
-    D_sharp = Note(3), 
-    E = Note(4), 
-    F = Note(5), 
-    F_sharp = Note(6), 
-    G = Note(7), 
-    G_sharp = Note(8), 
-    A = Note(9), 
-    A_sharp = Note(10), 
-    B = Note(11) 
-)
 
 def main():
     if (len(sys.argv) > 1):
@@ -42,12 +28,16 @@ def main():
     if(FileCheck(fileName) == 1):
         fileArray = ConvertFile(fileName)
         CreateMidi(fileArray, fileName)
+    
+    EndProgram('default')
 
 # Ends the program
 def EndProgram(reason):
     if(reason == 'string'):
         print("Failed to convert data, the provided dataset contains strings.")
-    else:
+    if(reason == 'file'):
+        print("Failed to convert data, the given file does not exist.")
+    if(reason =='default'):
         print("Conversion Complete.")
     exit()
 
@@ -70,12 +60,8 @@ def FormatFile(fileArray):
     # Remove all whitespace
     for i in range (0, len(cleanArray)):
         cleanArray[i] = cleanArray[i].replace(" ", "")
-        try:
-            cleanArray[i] = int(cleanArray[i])
-        except ValueError:
-            # Ends the program with the string error
-            EndProgram('string')
-
+    # Remove all words from data
+    cleanArray = [value for value in cleanArray if value.isdigit()]
 
     return cleanArray 
 
@@ -96,6 +82,21 @@ def ConvertFile(fileName):
 # This method takes the array and converts it into a midi file
 # This also converts the data to music notes
 def CreateMidi(fileArray, fileName):
+    # Dicitonary with all pyknon notes
+    noteDict = dict(
+        C = Note(0), 
+        C_sharp = Note(1),
+        D = Note(2), 
+        D_sharp = Note(3), 
+        E = Note(4), 
+        F = Note(5), 
+        F_sharp = Note(6), 
+        G = Note(7), 
+        G_sharp = Note(8), 
+        A = Note(9), 
+        A_sharp = Note(10), 
+        B = Note(11) 
+    )
     newFileName = (os.path.splitext(fileName)[0] + ".midi") 
 
     sequence = NoteSeq([])
@@ -103,7 +104,6 @@ def CreateMidi(fileArray, fileName):
     quarter_rest = Rest(0.25)
     fileArray = FormatFile(fileArray)
     for i in range (0, len(fileArray)):
-        # Do the log 10 of the 
         fileArray[i] = float(round(math.log(int(fileArray[i]), 10), 1))
         print(fileArray[i])
 
