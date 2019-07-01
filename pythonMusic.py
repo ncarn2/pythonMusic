@@ -13,6 +13,23 @@ import os
 import wave
 import random
 import struct
+import re
+
+# Dicitonary with all pyknon notes
+noteDict = dict(
+    C = Note(0), 
+    C_sharp = Note(1),
+    D = Note(2), 
+    D_sharp = Note(3), 
+    E = Note(4), 
+    F = Note(5), 
+    F_sharp = Note(6), 
+    G = Note(7), 
+    G_sharp = Note(8), 
+    A = Note(9), 
+    A_sharp = Note(10), 
+    B = Note(11) 
+)
 
 def main():
     if (len(sys.argv) > 1):
@@ -34,10 +51,18 @@ def FileCheck(fn):
         print ("Error: the file", fn, "does not appear to exist.")
         return 0
 
-# Formats the csv file in the case of strange formats
-def formatFile(fileName):
-    cleanFile = fileName.clean()
-    return cleanFile
+# Removes unwanted variables from the array
+def FormatFile(fileArray):
+    # regex for not white space and not empty string
+    unwanted = re.compile("(.|\s)*\S(.|\s)*")
+
+    cleanArray = list(filter(unwanted.search, fileArray)) 
+
+    # Remove all whitespace
+    for i in range (0, len(cleanArray)):
+        cleanArray[i] = cleanArray[i].replace(" ", "")
+
+    return cleanArray 
 
 # This method takes the file and converts it to a array
 def ConvertFile(fileName):
@@ -51,9 +76,6 @@ def ConvertFile(fileName):
             for value in row:
                 fileArray.append(value)
 
-
-    print (fileArray)
-
     return fileArray
 
 # This method takes the array and converts it into a midi file
@@ -62,27 +84,9 @@ def CreateMidi(fileArray, fileName):
     newFileName = (os.path.splitext(fileName)[0] + ".midi") 
 
     quarter_rest = Rest(0.25)
-
-    # Dicitonary with all pyknon notes
-    noteDict = dict(
-        C = Note(0), 
-        C_sharp = Note(1),
-        D = Note(2), 
-        D_sharp = Note(3), 
-        E = Note(4), 
-        F = Note(5), 
-        F_sharp = Note(6), 
-        G = Note(7), 
-        G_sharp = Note(8), 
-        A = Note(9), 
-        A_sharp = Note(10), 
-        B = Note(11) 
-    )
-    
-
-
+    fileArray = FormatFile(fileArray)
     for i in range (0, len(fileArray)):
-        fileArray[i-1]
+        print("file array[",i,"]", fileArray[i])
 
     sequence = NoteSeq([noteDict["C"], noteDict["D"], quarter_rest, noteDict["E"]])
 
