@@ -105,7 +105,11 @@ def CreateMidi(fileArray, fileName):
     fileArray = FormatFile(fileArray)
     for i in range (0, len(fileArray)):
         fileArray[i] = float(round(math.log(int(fileArray[i]), 10), 1))
-        print(fileArray[i])
+        print (fileArray[i])
+        if (fileArray[i] > 0.5):
+            sequence.append(noteDict["C"])
+        else:
+            sequence.append(noteDict["E"])
 
 
     midi = Midi(1, tempo=120)
