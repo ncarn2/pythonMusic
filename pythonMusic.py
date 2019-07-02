@@ -100,6 +100,7 @@ def CreateMidi(fileArray, fileName):
     newFileName = (os.path.splitext(fileName)[0] + ".midi") 
 
     sequence = NoteSeq([])
+    chord = NoteSeq([])
 
     quarter_rest = Rest(0.25)
     fileArray = FormatFile(fileArray)
@@ -108,11 +109,14 @@ def CreateMidi(fileArray, fileName):
         print (fileArray[i])
         if (fileArray[i] > 0.5):
             sequence.append(noteDict["C"])
+            chord.append(noteDict["F"])
         else:
-            sequence.append(noteDict["E"])
+            sequence.append(noteDict["D"])
+            chord.append(noteDict["E"])
 
 
     midi = Midi(1, tempo=120)
+    midi.seq_notes(chord, track=0)
     midi.seq_notes(sequence, track=0)
     midi.write(newFileName)
 
