@@ -1,8 +1,6 @@
 # This file takes a CSV file and converts it into WAV
 # Removes all string instances from the dataset
 
-from midi2audio import FluidSynth 
-
 import music as M, numpy as n
 import sys
 import csv
@@ -193,13 +191,6 @@ def CreateMusicFile(fileArray, fileName):
     M.core.W(pcm_samples, 'something.wav')
     fileArray = FormatFile(fileArray)
 
-
-# This method converts the midi file into a mp3 or wav
-def ConvertMidi(midiFile):
-    wavFileName = (os.path.splitext(midiFile.name)[0] + '.wav') 
-
-    fs = FluidSynth()
-    fs.midi_to_audio('example.midi', 'example.wav')
 
 if __name__ == '__main__':
     main()
