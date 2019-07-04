@@ -2,6 +2,7 @@
 # Removes all string instances from the dataset
 
 import music as M, numpy as n
+
 import sys
 import csv
 import os
@@ -76,7 +77,7 @@ def ConvertFile(fileName):
 # This method takes the array and converts it into a midi file
 # This also converts the data to music notes
 def CreateMusicFile(fileArray, fileName):
-    T = M.tables.Basic()
+    table = M.tables.Basic()
     H = M.utils.H
 
     # 1) start a ѕynth
@@ -184,7 +185,7 @@ def CreateMusicFile(fileArray, fileName):
     ### OR (DEPRECATED, but still kept while not convinced to remove...)
     isynth = M.synths.IteratorSynth()
     isynth.fundamental_frequency_sequence=freqs
-    isynth.tab_sequence = [T.sine, T.triangle, T.square, T.saw]
+    isynth.tab_sequence = [table.sine, table.triangle, table.square, table.saw]
 
     pcm_samples = M.H(*[isynth.renderIterate() for i in range(len(freqs))])
 
