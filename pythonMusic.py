@@ -47,17 +47,27 @@ def FileCheck(fn):
 
 # Removes unwanted variables from the array
 def FormatFile(fileArray):
+    acceptedTypes = [int, float]
+
     # regex for not white space and not empty string
     unwanted = re.compile("(.|\s)*\S(.|\s)*")
 
     cleanArray = list(filter(unwanted.search, fileArray)) 
 
+    # Convert to floats
+
+
     # Remove all whitespace
     for i, value in enumerate(cleanArray):
         cleanArray[i] = cleanArray[i].replace(" ", "")
+        try:
+            cleanArray[i] = float(cleanArray[i])
+        except:
+            # Leave the string
+            continue
 
-    # Remove all words from data
-    cleanArray = [value for value in cleanArray if value.isdigit()]
+    # Remove all words from array 
+    cleanArray = [value for value in cleanArray if type(value) in acceptedTypes)]
 
     return cleanArray 
 
@@ -78,12 +88,17 @@ def ConvertFile(fileName):
 # This method takes the array and converts it into a midi file
 # This also converts the data to music notes
 def CreateMusicFile(fileArray, fileName):
+    print("file array in create:", fileArray)
+    EndProgram('default')
 
     minVal = min(fileArray)
     maxVal = max(fileArray)
 
     table = music.tables.Basic()
     H = music.utils.H
+
+    print("Min Val: ", minVal)
+    print("Max Val: ", maxVal)
 
 
 if __name__ == '__main__':
