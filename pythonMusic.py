@@ -21,7 +21,11 @@ def main():
 
     # Run the program only if the file exists
     if(FileCheck(fileName) == 1):
+        # Opens the file
         fileArray = ConvertFile(fileName)
+        # Cleans the file 
+        fileArray = FormatFile(fileArray)
+        # Creates the music
         CreateMusicFile(fileArray, fileName)
     
     EndProgram('default')
@@ -53,8 +57,9 @@ def FormatFile(fileArray):
     cleanArray = list(filter(unwanted.search, fileArray)) 
 
     # Remove all whitespace
-    for i in range (0, len(cleanArray)):
+    for i, value in enumerate(cleanArray):
         cleanArray[i] = cleanArray[i].replace(" ", "")
+
     # Remove all words from data
     cleanArray = [value for value in cleanArray if value.isdigit()]
 
@@ -77,6 +82,10 @@ def ConvertFile(fileName):
 # This method takes the array and converts it into a midi file
 # This also converts the data to music notes
 def CreateMusicFile(fileArray, fileName):
+
+    for value in fileArray:
+        print(value)
+
     table = M.tables.Basic()
     H = M.utils.H
 
