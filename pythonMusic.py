@@ -67,7 +67,7 @@ def FormatFile(fileArray):
             continue
 
     # Remove all words from array 
-    cleanArray = [value for value in cleanArray if type(value) in acceptedTypes)]
+    cleanArray = [value for value in cleanArray if type(value) in acceptedTypes]
 
     return cleanArray 
 
@@ -88,9 +88,6 @@ def ConvertFile(fileName):
 # This method takes the array and converts it into a midi file
 # This also converts the data to music notes
 def CreateMusicFile(fileArray, fileName):
-    print("file array in create:", fileArray)
-    EndProgram('default')
-
     minVal = min(fileArray)
     maxVal = max(fileArray)
 
