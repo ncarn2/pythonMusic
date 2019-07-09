@@ -63,7 +63,7 @@ def FormatFile(fileArray):
         try:
             cleanArray[i] = float(cleanArray[i])
         except:
-            # Leave the string
+            # Leave the string in the array
             continue
 
     # Remove all words from array 
