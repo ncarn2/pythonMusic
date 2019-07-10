@@ -3,6 +3,8 @@
 
 import music, numpy
 
+from collections import Counter
+import os
 import sys
 import csv
 import re
@@ -61,7 +63,8 @@ def FormatFile(fileArray):
     for i, value in enumerate(cleanArray):
         cleanArray[i] = cleanArray[i].replace(" ", "")
         try:
-            cleanArray[i] = float(cleanArray[i])
+            # This takes care of scientific notation
+            cleanArray[i] = int(float(cleanArray[i]))
         except:
             # Leave the string in the array
             continue
@@ -88,14 +91,23 @@ def ConvertFile(fileName):
 # This method takes the array and converts it into a midi file
 # This also converts the data to music notes
 def CreateMusicFile(fileArray, fileName):
-    minVal = min(fileArray)
-    maxVal = max(fileArray)
+    # Human hearing range (20, 20000) Hz
 
-    table = music.tables.Basic()
-    H = music.utils.H
+    # Counts the occurences of each number in the dataset
+    countDict = Counter(fileArray)
 
-    print("Min Val: ", minVal)
-    print("Max Val: ", maxVal)
+    print("Count Dict Key: ", countDict.keys())
+    print("Count Dict Values: ", countDict.values())
+
+    synth = music.core.Being()
+
+    synth.b_ = [1/2, 1/4, 1/4]
+    synth.fv_ = [0, 1, 5, 15, 150, 1500, 15000]
+    synth.nu_= [5]
+    synth.f_ = [150, 220]
+
+    fileName = os.path.splitext(fileName)[0] + ".wav"
+    synth.render(30, fileName)
 
 
 if __name__ == '__main__':
