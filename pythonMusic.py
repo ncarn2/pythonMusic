@@ -1,5 +1,6 @@
 # This file takes a CSV file and converts it into WAV
 # Removes all string instances from the dataset
+# This is a class assignment and does not follow standard PIP8
 
 import music, numpy
 
@@ -96,9 +97,16 @@ def CreateMusicFile(fileArray, fileName):
     # Counts the occurences of each number in the dataset
     countDict = Counter(fileArray)
 
-    print("Count Dict Key: ", countDict.keys())
-    print("Count Dict Values: ", countDict.values())
+    # Arbitrary length of the song
+    songLength = 210 #seconds
 
+    # Number of elements in the array
+    numElements = len(fileArray) 
+
+    # Amount of data values per second
+    notesPerSecond = numElements/songLength
+
+    print( "NPS: ", int(notesPerSecond))
     synth = music.core.Being()
 
     synth.b_ = [1/2, 1/4, 1/4]
@@ -107,7 +115,8 @@ def CreateMusicFile(fileArray, fileName):
     synth.f_ = [150, 220]
 
     fileName = os.path.splitext(fileName)[0] + ".wav"
-    synth.render(30, fileName)
+
+    synth.render(songLength, fileName)
 
 
 if __name__ == '__main__':
