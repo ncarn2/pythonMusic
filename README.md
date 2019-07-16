@@ -11,6 +11,3 @@ python pythonMusic.py example.csv
 ## Authors
 
 * **Nicholas Carnival** [Github](https://github.com/ncarn2)
-* **Kristina**
-* **Emily**
-* **Sam** 

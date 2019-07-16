@@ -57,21 +57,20 @@ def FormatFile(fileArray):
 
     cleanArray = list(filter(unwanted.search, fileArray)) 
 
-    # Convert to floats
-
-
     # Remove all whitespace
     for i, value in enumerate(cleanArray):
         cleanArray[i] = cleanArray[i].replace(" ", "")
         try:
             # This takes care of scientific notation
-            cleanArray[i] = int(float(cleanArray[i]))
+            cleanArray[i] = (float(cleanArray[i]))
+            #print("Clean Array I: ", cleanArray[i])
         except:
             # Leave the string in the array
             continue
 
     # Remove all words from array 
     cleanArray = [value for value in cleanArray if type(value) in acceptedTypes]
+
 
     return cleanArray 
 
@@ -92,13 +91,15 @@ def ConvertFile(fileName):
 # This method takes the array and converts it into a midi file
 # This also converts the data to music notes
 def CreateMusicFile(fileArray, fileName):
+    H = music.utils.H
     # Human hearing range (20, 20000) Hz
+    soundRange = range( 80, 13000 )
 
     # Counts the occurences of each number in the dataset
     countDict = Counter(fileArray)
 
     # Arbitrary length of the song
-    songLength = 210 #seconds
+    songLength = 60 #seconds
 
     # Number of elements in the array
     numElements = len(fileArray) 
@@ -108,16 +109,20 @@ def CreateMusicFile(fileArray, fileName):
 
     print( "NPS: ", int(notesPerSecond))
     synth = music.core.Being()
-
-    synth.b_ = [1/2, 1/4, 1/4]
-    synth.fv_ = [0, 1, 5, 15, 150, 1500, 15000]
-    synth.nu_= [5]
-    synth.f_ = [150, 220]
+    # 2) set its parameters using sequences to be iterated through
+    synth.d_ = [1/2, 1/4, 1/4]  # durations in seconds
+    synth.fv_ = [20, 1,500, 5]  # vibrato frequency THIS ONE IS IMPORTANT
+    synth.nu_ = [5]  # vibrato depth in semitones (maximum deviation of pitch)
+    synth.f_ = [220, 330]  # frequencies for the notes
 
     fileName = os.path.splitext(fileName)[0] + ".wav"
 
-    synth.render(songLength, fileName)
-
+    test = synth.render(songLength)
+    synth.f_ += [400]
+    synth.fv_ = [0, 1, 2]
+    test1 = synth.render(songLength)
+    sequence = H(test+ test1)
+    music.core.WS(sequence, fileName)
 
 if __name__ == '__main__':
     main()
