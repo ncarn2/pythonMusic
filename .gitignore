@@ -1,4 +1,8 @@
-changeDelimeter.py
 *.wav
 *.midi
 *.mp3
+*.csv
+
+# Don't ignore these files
+!./example.csv
+!./blackHoleWaveform.csv
