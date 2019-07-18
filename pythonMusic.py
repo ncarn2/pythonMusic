@@ -19,34 +19,22 @@ def main():
         fileName = input('Input the name of the file that you want converted into music: ')
 
     # Run the program only if the file exists
-    if(FileCheck(fileName) == 1):
-        # Opens the file
-        fileArray = ConvertFile(fileName)
-        # Cleans the file 
-        fileArray = FormatFile(fileArray)
-        # Creates the music
-        CreateMusicFile(fileArray, fileName)
-    
-    EndProgram('default')
-
-# Ends the program
-def EndProgram(reason):
-    if(reason == 'string'):
-        print("Failed to convert data, the provided dataset contains strings.")
-    if(reason == 'file'):
-        print("Failed to convert data, the given file does not exist.")
-    if(reason =='default'):
-        print("Conversion Complete.")
-    exit()
-
-# Checks if the file exists 
-def FileCheck(fn):
     try:
-        open(fn, "r") 
-        return 1
+        open(fileName, "r")
     except IOError:
-        print ("Error: the file", fn, "does not appear to exist.")
-        return 0
+        print ("Error: the file", fileName, "does not appear to exist.")
+        exit()
+
+    # Opens the file
+    fileArray = ConvertFile(fileName)
+    # Cleans the file 
+    fileArray = FormatFile(fileArray)
+    # Creates the music
+    SimpleConversion(fileArray, fileName)
+    
+    # End the Program
+    print("Conversion Complete")
+    exit()
 
 # Removes unwanted variables from the array
 def FormatFile(fileArray):
@@ -90,7 +78,7 @@ def ConvertFile(fileName):
 
 # This method takes the array and converts it into a midi file
 # This also converts the data to music notes
-def CreateMusicFile(fileArray, fileName):
+def SimpleConversion(fileArray, fileName):
     H = music.utils.H
     # Human hearing range (20, 20000) Hz
     soundRange = range( 80, 13000 )
