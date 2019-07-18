@@ -4,5 +4,5 @@
 *.csv
 
 # Don't ignore these files
-!./example.csv
-!./blackHoleWaveform.csv
+!example.csv
+!blackHoleWaveform.csv
