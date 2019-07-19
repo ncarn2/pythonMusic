@@ -26,91 +26,109 @@ def main():
         exit()
 
     # Opens the file
-    fileArray = ConvertFile(fileName)
+    fileList = ConvertFile(fileName)
     # Cleans the file 
-    fileArray = FormatFile(fileArray)
+    fileList = FormatFile(fileList)
     # Creates the music
-    SimpleConversion(fileArray, fileName)
+    SimpleConversion(fileList, fileName)
     
     # End the Program
     print("Conversion Complete")
     exit()
 
 # Removes unwanted variables from the array
-def FormatFile(fileArray):
-    acceptedTypes = [int, float]
+def FormatFile(fileList):
+    print("Cleaning Dataset")
+    acceptedTypes = [int]
 
     # regex for not white space and not empty string
     unwanted = re.compile("(.|\s)*\S(.|\s)*")
 
-    cleanArray = list(filter(unwanted.search, fileArray)) 
+    cleanList = list(filter(unwanted.search, fileList)) 
 
     # Remove all whitespace
-    for i, value in enumerate(cleanArray):
-        cleanArray[i] = cleanArray[i].replace(" ", "")
+    for i, value in enumerate(cleanList):
+        cleanList[i] = cleanList[i].replace(" ", "")
         try:
             # This takes care of scientific notation
-            cleanArray[i] = (float(cleanArray[i]))
-            #print("Clean Array I: ", cleanArray[i])
+            cleanList[i] = int(float(cleanList[i]))
         except:
             # Leave the string in the array
             continue
 
-    # Remove all words from array 
-    cleanArray = [value for value in cleanArray if type(value) in acceptedTypes]
-
-
-    return cleanArray 
+    # Remove all words from list 
+    # Removes all 0 from list
+    cleanList = [value for value in cleanList if type(value) in acceptedTypes and value > 0] 
+    median = numpy.median(cleanList)
+    cleanList = [value for value in cleanList if value < (5 * median)] 
+    return cleanList 
 
 # This method takes the file and converts it to a array
 def ConvertFile(fileName):
-    fileArray = []
+    fileList = []
 
     with open(fileName) as csvFile:
         csvReader = csv.reader(csvFile)
 
-        #for each row, add each element into the fileArray
+        #for each row, add each element into the fileList
         for row in csvReader:
             for value in row:
-                fileArray.append(value)
+                fileList.append(value)
 
-    return fileArray
+    return fileList
 
 # This method takes the array and converts it into a midi file
 # This also converts the data to music notes
-def SimpleConversion(fileArray, fileName):
-    H = music.utils.H
-    # Human hearing range (20, 20000) Hz
-    soundRange = range( 80, 13000 )
-
-    # Counts the occurences of each number in the dataset
-    countDict = Counter(fileArray)
-
-    # Arbitrary length of the song
-    songLength = 60 #seconds
-
-    # Number of elements in the array
-    numElements = len(fileArray) 
-
-    # Amount of data values per second
-    notesPerSecond = numElements/songLength
-
-    print( "NPS: ", int(notesPerSecond))
-    synth = music.core.Being()
-    # 2) set its parameters using sequences to be iterated through
-    synth.d_ = [1/2, 1/4, 1/4]  # durations in seconds
-    synth.fv_ = [20, 1,500, 5]  # vibrato frequency THIS ONE IS IMPORTANT
-    synth.nu_ = [5]  # vibrato depth in semitones (maximum deviation of pitch)
-    synth.f_ = [220, 330]  # frequencies for the notes
-
+def SimpleConversion(fileList, fileName):
+    print("Creating Audio File")
     fileName = os.path.splitext(fileName)[0] + ".wav"
 
-    test = synth.render(songLength)
-    synth.f_ += [400]
-    synth.fv_ = [0, 1, 2]
-    test1 = synth.render(songLength)
-    sequence = H(test+ test1)
-    music.core.WS(sequence, fileName)
+    H = music.utils.H
+    # Human hearing range (20, 20000) Hz
+
+    minHz = 100
+    maxHz = 5000
+
+
+    # Arbitrary length of the song
+    songLength = 180#seconds
+
+    # Amount of data values per second
+    notesPerSecond = int(len(fileList)/songLength)
+
+    minVal = min(fileList)
+    maxVal = max(fileList)
+
+    synth = music.core.Being()
+    synth.d_ = [1]  # durations in seconds
+    synth.nu_ = [0] # single notes
+
+    synth.f_ = []  # frequencies for the notes
+
+    slope = (maxHz - minHz) / (maxVal - minVal)
+    frequencies = []
+
+
+    for i, value in enumerate(fileList):
+        if( (i % notesPerSecond) == 0):
+            newVal = value * slope
+            if(newVal > minHz):
+                frequencies.append(newVal)
+    
+    for value in frequencies:
+        print("Value :", value)
+        synth.f_.append(value)
+
+    first = synth.render(songLength)
+
+    temp = synth.f_[::-1]
+    synth.f_ = temp 
+    synth.d_ = [1]
+    synth.nu_ = [1]
+
+    second = synth.render(songLength)
+    combined = H(first + second)
+    music.core.WS(combined, fileName)
 
 if __name__ == '__main__':
     main()

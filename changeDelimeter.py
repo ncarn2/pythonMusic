@@ -1,12 +1,19 @@
-# This file changes a space separated file into a comma separated one
 import csv
+import sys
 import os
 
-inFileName = input("What file would you like converted? ")
-outFileName = os.path.splitext(inFileName)[0] + ".csv"
+# Convert comma-delimited CSV files to pipe-delimited files
+# Usage: Drag-and-drop CSV file over script to convert it.
 
-with open(inFileName) as inFile, open(outFileName, 'w') as outFile:
-    for line in inFile:
-        outFile.write(" ".join(line.split()).replace(' ', ','))
-        outFile.write(",")
+inputPath = sys.argv[1]
+outputPath = os.path.splitext(inputPath)[0] + ".csv"
 
+# https://stackoverflow.com/a/27553098/3357935
+print("Converting CSV to tab-delimited file...")
+with open(inputPath) as inputFile:
+	with open(outputPath, 'w', newline='') as outputFile:
+		reader = csv.DictReader(inputFile, delimiter=' ')
+		writer = csv.DictWriter(outputFile, reader.fieldnames, delimiter=',')
+		writer.writeheader()
+		writer.writerows(reader)
+print("Conversion complete.")
