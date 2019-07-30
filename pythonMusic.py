@@ -22,7 +22,7 @@ def main():
     try:
         open(fileName, "r")
     except IOError:
-        print ("Error: the file", fileName, "does not appear to exist.")
+        print ("Error: the file", fileName, "does not appear to exist. Check if the file is in your working directory.")
         exit()
 
     # Opens the file
@@ -31,7 +31,8 @@ def main():
     fileList = FormatFile(fileList)
     # Creates the music
     SimpleConversion(fileList, fileName)
-    
+    ComplexConversion(fileList, fileName) 
+
     # End the Program
     print("Conversion Complete")
     exit()
@@ -80,8 +81,8 @@ def ConvertFile(fileName):
 # This method takes the array and converts it into a midi file
 # This also converts the data to music notes
 def SimpleConversion(fileList, fileName):
+    fileName = os.path.splitext(fileName)[0] + "_simple.wav"
     print("Creating Audio File")
-    fileName = os.path.splitext(fileName)[0] + ".wav"
 
     H = music.utils.H
     # Human hearing range (20, 20000) Hz
@@ -116,7 +117,6 @@ def SimpleConversion(fileList, fileName):
                 frequencies.append(newVal)
     
     for value in frequencies:
-        print("Value :", value)
         synth.f_.append(value)
 
     first = synth.render(songLength)
@@ -129,6 +129,9 @@ def SimpleConversion(fileList, fileName):
     second = synth.render(songLength)
     combined = H(first + second)
     music.core.WS(combined, fileName)
+
+def ComplexConversion(fileList, fileName):
+    fileName = os.path.splitext(fileName)[0] + "_complex.wav"
 
 if __name__ == '__main__':
     main()
