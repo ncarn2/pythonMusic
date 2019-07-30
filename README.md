@@ -7,6 +7,7 @@ This program will take any dataset and turn it into "music" in the form of a wav
 ```bash
 python pythonMusic.py example.csv
 ```
+This will convert the given csv file to a .wav audio file.
 
 ## Authors
 
