@@ -1,7 +1,7 @@
 # Python Music
 
 ## Description:
-This program will take any dataset and turn it into "music" 
+This program will take any dataset and turn it into "music" in the form of a wavefile using ttm's [music](https://github.com/ttm/music)
 
 ## Example:
 ```bash
