@@ -7,11 +7,13 @@ This program will take any dataset and turn it into "music" in the form of a wav
 Install with:
 ```bash
 git clone https:github.com/ncarn2/pythonMusic.git
+cd pythonMusic
 ```
 Then run this:
 ```bash
 python pythonMusic.py example.csv
 ```
+
 
 
 ## Authors
