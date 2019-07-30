@@ -2,15 +2,10 @@
 # Removes all string instances from the dataset
 # This is a class assignment and does not follow standard PIP8
 
-import music, numpy
-
-from collections import Counter
-import os
-import sys
+import music
+import re, numpy
+import os, sys
 import csv
-import re
-import math
-
 
 def main():
     if (len(sys.argv) > 1):
@@ -34,12 +29,12 @@ def main():
     ComplexConversion(fileList, fileName) 
 
     # End the Program
-    print("Conversion Complete")
+    print("[*] Conversion Complete")
     exit()
 
 # Removes unwanted variables from the array
 def FormatFile(fileList):
-    print("Cleaning Dataset")
+    print("[*] Cleaning Dataset")
     acceptedTypes = [int]
 
     # regex for not white space and not empty string
@@ -61,7 +56,7 @@ def FormatFile(fileList):
     # Removes all 0 from list
     cleanList = [value for value in cleanList if type(value) in acceptedTypes and value > 0] 
     median = numpy.median(cleanList)
-    cleanList = [value for value in cleanList if value < (5 * median)] 
+    cleanList = [value for value in cleanList if value < (3 * median)] 
     return cleanList 
 
 # This method takes the file and converts it to a array
@@ -82,20 +77,19 @@ def ConvertFile(fileName):
 # This also converts the data to music notes
 def SimpleConversion(fileList, fileName):
     fileName = os.path.splitext(fileName)[0] + "_simple.wav"
-    print("Creating Audio File")
+    print("[*] Creating Audio File")
 
     H = music.utils.H
-    # Human hearing range (20, 20000) Hz
 
     minHz = 100
     maxHz = 5000
-
 
     # Arbitrary length of the song
     songLength = 180#seconds
 
     # Amount of data values per second
-    notesPerSecond = int(len(fileList)/songLength)
+    notesPerSecond = int(len(fileList)/songLength) if \
+        int(len(fileList)/songLength) > 0 else 1
 
     minVal = min(fileList)
     maxVal = max(fileList)
@@ -106,13 +100,12 @@ def SimpleConversion(fileList, fileName):
 
     synth.f_ = []  # frequencies for the notes
 
-    slope = (maxHz - minHz) / (maxVal - minVal)
+    zscore = (maxHz - minHz) / (maxVal - minVal)
     frequencies = []
-
 
     for i, value in enumerate(fileList):
         if( (i % notesPerSecond) == 0):
-            newVal = value * slope
+            newVal = value * zscore
             if(newVal > minHz):
                 frequencies.append(newVal)
     

@@ -2,7 +2,7 @@
 *.midi
 *.mp3
 *.csv
+*.png
 
 # Don't ignore these files
 !example.csv
-!blackHoleWaveform.csv
